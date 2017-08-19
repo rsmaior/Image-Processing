@@ -17,7 +17,7 @@ done;
 ##### ERDAS IMG #######
 for f in * ;
 do gdal_translate \
--stats  -scale  -co PHOTOMETRIC=YCBCR  -co COMPRESS=JPEG  -co TILED=YES  -ot Byte  -of GTiff  -b 1 -b 2 -b 3  \
+-scale  -co PHOTOMETRIC=YCBCR  -co COMPRESS=JPEG  -co TILED=YES  -ot Byte  -of GTiff  -b 1 -b 2 -b 3  \
 --config GDAL_NUM_THREADS ALL_CPUS    $f    O_${f%.img}.tif \
 && \
 gdaladdo \
@@ -25,3 +25,5 @@ gdaladdo \
 O_${f%.img}.tif    2 4 8 16 32 64;
 done;
 ##########################
+
+# opção -stats do translate é o caso???
