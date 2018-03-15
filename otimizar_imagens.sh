@@ -10,7 +10,7 @@ do gdal_translate \
 $f o_$f   \
 && \
 gdaladdo \
--ro -r average --config COMPRESS_OVERVIEW JPEG --config PHOTOMETRIC_OVERVIEW YCBCR --config INTERLEAVE_OVERVIEW PIXEL \
+-ro -r near --config COMPRESS_OVERVIEW JPEG --config PHOTOMETRIC_OVERVIEW YCBCR --config INTERLEAVE_OVERVIEW PIXEL \
 o_$f  2 4 8 16 32 64;
 done;
 #############################
@@ -25,7 +25,7 @@ do gdal_translate \
 --config GDAL_NUM_THREADS ALL_CPUS    $f    O_${f%.img}.tif \
 && \
 gdaladdo \
--ro -r average --config COMPRESS_OVERVIEW JPEG --config PHOTOMETRIC_OVERVIEW YCBCR --config INTERLEAVE_OVERVIEW PIXEL \
+-ro -r near --config COMPRESS_OVERVIEW JPEG --config PHOTOMETRIC_OVERVIEW YCBCR --config INTERLEAVE_OVERVIEW PIXEL \
 O_${f%.img}.tif    2 4 8 16 32 64;
 done;
 ##########################
