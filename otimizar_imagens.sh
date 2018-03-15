@@ -35,5 +35,5 @@ done;
 for f in * ;
 do gdalwarp \
 -s_srs EPSG:32722 -t_srs EPSG:4674 -r near -co NUM_THREADS=ALL_CPUS --config GDAL_CACHEMAX 1000 \
--wm 1000 -multi -q -cutline MOLDURA.shp -dstalpha -of GTiff o_$f $f_SIRGAS2000.tif;
+-wm 1000 -multi -q -cutline MOLDURA.shp -crop_to_cutline -dstalpha -of GTiff o_$f $f_SIRGAS2000.tif;
 done;
