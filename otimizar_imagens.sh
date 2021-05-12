@@ -1,6 +1,5 @@
 #/bin/bash
 
-
 ##### Geotiff RGB (Byte) ########
 ##### translate: lê a banda 1, 2 e 3, cria uma saida em GTiff e comprime
 ##### addo: cria pirâmides pela média e comprime cada uma
@@ -14,7 +13,6 @@ gdaladdo \
 o_$f  2 4 8 16 32 64;
 done;
 #############################
-
 
 ##### ERDAS IMG #######
 ##### translate: lê a banda 1, 2 e 3, cria uma saida em GTiff, Transforma para Byte ajustando (scale) e comprime
@@ -30,6 +28,16 @@ O_${f%.img}.tif    2 4 8 16 32 64;
 done;
 ##########################
 # opção -stats do translate é o caso???
+
+##### ERDAS ECW #######
+##### translate: lê a banda 1, 2 e 3, cria uma saida em GTiff, Transforma para Byte ajustando (scale) e comprime
+##### addo: cria pirâmides pela média e comprime cada uma
+for f in *.ecw;
+do gdal_translate \
+--config GDAL_NUM_THREADS ALL_CPUS   -co PHOTOMETRIC=YCBCR  -co COMPRESS=JPEG   -co TILED=YES   -b 1 -b 2 -b 3 $f linux_"${f%%.*}".tif  
+&& \
+gdaladdo \
+--config USE_RRD YES  -r near --config COMPRESS_OVERVIEW JPEG --config PHOTOMETRIC_OVERVIEW YCBCR --config INTERLEAVE_OVERVIEW PIXEL linux_"${f%%.*}".tif  2 4 8 16 32 64; done;
 
 ##### Silvania ####
 for f in * ;
