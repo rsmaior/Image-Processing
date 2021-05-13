@@ -2,42 +2,50 @@
 
 ##### Geotiff RGB (Byte) ########
 ##### translate: lê a banda 1, 2 e 3, cria uma saida em GTiff e comprime
-##### addo: cria pirâmides pela média e comprime cada uma
+##### addo: cria pirâmides EXTERNAS (-ro) pelo vizinho mais próximo e comprime cada uma
 for f in *;
 do gdal_translate \
---config GDAL_NUM_THREADS ALL_CPUS   -co PHOTOMETRIC=YCBCR  -co COMPRESS=JPEG   -co TILED=YES   -b 1 -b 2 -b 3 \
-$f o_$f   \
+-b 1 -b 2 -b 3 \
+-co PHOTOMETRIC=YCBCR  -co COMPRESS=JPEG   -co TILED=YES \
+--config GDAL_NUM_THREADS ALL_CPUS \
+$f    o_$f \
 && \
 gdaladdo \
 -ro -r near --config COMPRESS_OVERVIEW JPEG --config PHOTOMETRIC_OVERVIEW YCBCR --config INTERLEAVE_OVERVIEW PIXEL \
 o_$f  2 4 8 16 32 64;
 done;
-#############################
+
 
 ##### ERDAS IMG #######
 ##### translate: lê a banda 1, 2 e 3, cria uma saida em GTiff, Transforma para Byte ajustando (scale) e comprime
-##### addo: cria pirâmides pela média e comprime cada uma
-for f in * ;
+##### addo: cria pirâmides EXTERNAS (-ro) pelo vizinho mais próximo e comprime cada uma
+for f in *.img ;
 do gdal_translate \
--b 1 -b 2 -b 3    -of GTiff  -ot Byte -scale    -co PHOTOMETRIC=YCBCR -co COMPRESS=JPEG -co TILED=YES \
---config GDAL_NUM_THREADS ALL_CPUS    $f    O_${f%.img}.tif \
+-b 1 -b 2 -b 3 \
+-of GTiff  -ot Byte -scale    -co PHOTOMETRIC=YCBCR -co COMPRESS=JPEG -co TILED=YES \
+--config GDAL_NUM_THREADS ALL_CPUS \
+$f    o_${f%.img}.tif \
 && \
 gdaladdo \
 -ro -r near --config COMPRESS_OVERVIEW JPEG --config PHOTOMETRIC_OVERVIEW YCBCR --config INTERLEAVE_OVERVIEW PIXEL \
 O_${f%.img}.tif    2 4 8 16 32 64;
 done;
-##########################
-# opção -stats do translate é o caso???
+
 
 ##### ERDAS ECW #######
 ##### translate: lê a banda 1, 2 e 3, cria uma saida em GTiff, Transforma para Byte ajustando (scale) e comprime
-##### addo: cria pirâmides pela média e comprime cada uma
+##### addo: cria pirâmides EXTERNAS (-ro) pelo vizinho mais próximo e comprime cada uma
 for f in *.ecw;
 do gdal_translate \
---config GDAL_NUM_THREADS ALL_CPUS   -co PHOTOMETRIC=YCBCR  -co COMPRESS=JPEG   -co TILED=YES   -b 1 -b 2 -b 3 $f linux_"${f%%.*}".tif  
+-b 1 -b 2 -b 3 \
+-of GTiff  -ot Byte -scale    -co PHOTOMETRIC=YCBCR -co COMPRESS=JPEG -co TILED=YES \
+--config GDAL_NUM_THREADS ALL_CPUS \
+$f     linux_"${f%%.*}".tif \
 && \
 gdaladdo \
---config USE_RRD YES  -r near --config COMPRESS_OVERVIEW JPEG --config PHOTOMETRIC_OVERVIEW YCBCR --config INTERLEAVE_OVERVIEW PIXEL linux_"${f%%.*}".tif  2 4 8 16 32 64; done;
+--config USE_RRD YES  -r near --config COMPRESS_OVERVIEW JPEG --config PHOTOMETRIC_OVERVIEW YCBCR --config INTERLEAVE_OVERVIEW PIXEL \
+linux_"${f%%.*}".tif  2 4 8 16 32 64; 
+done;
 
 ##### Silvania ####
 for f in * ;
